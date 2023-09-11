@@ -12,7 +12,7 @@ const DetailSubmitSurvive = db.define('detailSubmitSurvive', {
   claimedXp: {
     type: DataTypes.BOOLEAN
   },
-  preparationData:{
+  preparationData: {
     type: DataTypes.STRING
   }
 }, {

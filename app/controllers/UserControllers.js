@@ -113,7 +113,6 @@ const sendEmailTemplate = (email, subject, body, res, resSuccess, resFailed) => 
   }
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
-      console.log('ini ya', err)
       return res.json(errorResonse(resFailed || `${subject} gagal mengirim email`))
     } else {
       return res.status(200).json(succesResponse({ msg: resSuccess || `${subject} berhasil` }))

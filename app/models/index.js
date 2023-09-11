@@ -22,13 +22,13 @@ const dbAsync = async () => {
 
   OrganizerLocation.belongsTo(Destination)
   Destination.hasMany(OrganizerLocation)
-  
+
   Partner.belongsTo(OrganizerLocation)
   OrganizerLocation.hasMany(Partner)
 
   BannedDestination.belongsTo(Survivor)
   Survivor.hasMany(BannedDestination)
-  
+
   BannedDestination.belongsTo(Destination)
   Destination.hasMany(BannedDestination)
 
@@ -43,12 +43,11 @@ const dbAsync = async () => {
 
   DetailSubmitSurvive.belongsTo(TransactionSubmitSurvive)
   TransactionSubmitSurvive.hasMany(DetailSubmitSurvive)
-  
 
-  await db.sync({ force: true })
-  // await db.sync()
+  // await db.sync({ force: true })
+  await db.sync()
 }
 
 dbAsync()
 
-module.exports = { User, Partner, Survivor }
+module.exports = { User, Partner, Survivor, Category }

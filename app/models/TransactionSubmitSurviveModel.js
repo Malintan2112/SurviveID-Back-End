@@ -18,7 +18,7 @@ const TransactionSubmitSurvive = db.define('transactionSubmitSurvive', {
   totalPrice: {
     type: DataTypes.INTEGER
   },
-  preparationData:{
+  preparationData: {
     type: DataTypes.STRING
   }
 }, {

@@ -8,6 +8,15 @@ const Category = db.define('categories', {
   categoryName: {
     type: DataTypes.STRING
   },
+  categoryImage: {
+    type: DataTypes.STRING
+  },
+  categoryDescription: {
+    type: DataTypes.STRING
+  },
+  categoryIcon: {
+    type: DataTypes.STRING
+  },
   isShow: {
     type: DataTypes.BOOLEAN,
     defaultValue: 0
