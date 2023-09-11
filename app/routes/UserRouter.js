@@ -4,8 +4,6 @@ const { createUser, getAllUsers, login, logout, getUserById, loginFromGoogle, se
 const refreshToken = require('../controllers/RefreshTokenController.js')
 const verifyToken = require('../middleware/VerifyToken.js')
 
-
-
 const UserRouter = express.Router()
 
 UserRouter.get('/', verifyToken, getAllUsers)
@@ -18,10 +16,5 @@ UserRouter.get('/:id', getUserById)
 UserRouter.get('/send/mail', sendMail)
 UserRouter.put('/updatePassword', updatePassword)
 UserRouter.get('/report/printExcell', printExcell)
-
-
-
-
-
 
 module.exports = UserRouter

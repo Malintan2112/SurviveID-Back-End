@@ -35,4 +35,4 @@ const miniFormat = (date, addTime) => {
     return parsedDate
   } else return 'Date not found'
 }
-module.exports= {dateParser, dateParserEn, miniFormat}
+module.exports = { dateParser, dateParserEn, miniFormat }

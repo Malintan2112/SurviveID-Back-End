@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Malintan2112/artetis.com#readme",
   "dependencies": {
+    "api-wilayah-indonesia": "https://github.com/Malintan2112/api-wilayah-indonesia",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",

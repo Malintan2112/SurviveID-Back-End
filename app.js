@@ -7,10 +7,11 @@ const cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
 const pdf = require('express-pdf')
 const UserRouter = require('./app/routes/UserRouter.js')
+const RegionRouter = require('./app/routes/RegionRouter.js')
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000
 
-dotenv.config();
+dotenv.config()
 const app = express()
 // body-parser middleware use
 app.use(bodyparser.json())
@@ -33,9 +34,6 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(pdf)
 app.use('/users', UserRouter)
-
-
-
-
+app.use('/region', RegionRouter)
 
 app.listen(PORT, () => console.log(`Server is conected  ${PORT}`))
