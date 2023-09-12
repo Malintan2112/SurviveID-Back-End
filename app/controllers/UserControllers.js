@@ -178,10 +178,11 @@ const createUser = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt)
     const isEmailExisting = await checkEmail(email)
     if (!isEmailExisting) {
-      await User.create({ ...req.body, password: hashPassword, isVerify: false })
+      const user = await User.create({ ...req.body, password: hashPassword, isVerify: false })
       const isEmailExisting = await checkEmail(email)
       const desc = `Berikut merupakan link verfikasi email anda. klik link ini untuk verifikasi <a href="https://api.artetisapps.com/users/verifikasi/${isEmailExisting.id}">Klik Link</a> `
-      sendEmailTemplate(req.body.email, 'Verfikasi Email', desc, res, 'Silahkan check inbox/spam pada email anda untuk memverfikasi', 'Terjadi Kesalahan Server Saat Register')
+      res.json(succesResponse(user))
+      // sendEmailTemplate(req.body.email, 'Verfikasi Email', desc, res, 'Silahkan check inbox/spam pada email anda untuk memverfikasi', 'Terjadi Kesalahan Server Saat Register')
     } else return res.json(errorResonse('Akun Sudah Terdaftar '))
   } catch (error) {
     return res.json(errorResonse('Terjadi Kesalahan Server Saat Register'))
@@ -249,12 +250,8 @@ const login = async (req, res) => {
     const name = isEmailExisting.name
     const userId = isEmailExisting.id
 
-    const accessToken = jwt.sign({ userId, name, email }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: '30d'
-    })
-    const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: '1d'
-    })
+    const accessToken = jwt.sign({ userId, name, email }, process.env.ACCESS_TOKEN_SECRET)
+    const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET)
 
     await User.update({ refresh_token: refreshToken }, {
       where: {
@@ -265,14 +262,14 @@ const login = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000
     })
-    return res.status(200).json(succesResponse({ token: accessToken, user: { id: isEmailExisting.id, name: isEmailExisting.name, email: isEmailExisting.email } }))
+    return res.status(200).json(succesResponse({ token: accessToken, user: { ...isEmailExisting, password: null } }))
   } catch (error) {
     return res.json(errorResonse('Terjadi Kesalahan Server Saat Login'))
   }
 }
 const loginFromGoogle = async (req, res) => {
   try {
-    const { email, name: nameBody, img } = req.body
+    const { email } = req.body
     let isEmailExisting = await checkEmail(email)
     if (!isEmailExisting) {
       await User.create({ ...req.body, isVerify: true })
@@ -297,7 +294,7 @@ const loginFromGoogle = async (req, res) => {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000
     })
-    return res.status(200).json(succesResponse({ token: accessToken, user: { ...isEmailExisting } }))
+    return res.status(200).json(succesResponse({ token: accessToken, user: { ...isEmailExisting, password: null } }))
   } catch (error) {
     return res.json(errorResonse(`error server : ${error}`))
   }
