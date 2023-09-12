@@ -10,6 +10,7 @@ const UserRouter = require('./app/routes/UserRouter.js')
 const RegionRouter = require('./app/routes/RegionRouter.js')
 const CategoryRouter = require('./app/routes/CategoryRouter.js')
 const DestinationRouter = require('./app/routes/DestinationRouter.js')
+const SurvivorRouter = require('./app/routes/SurvivorRouter.js')
 
 const PORT = process.env.PORT || 5000
 
@@ -39,5 +40,6 @@ app.use('/user', UserRouter)
 app.use('/region', RegionRouter)
 app.use('/category', CategoryRouter)
 app.use('/destination', DestinationRouter)
+app.use('/survivor', SurvivorRouter)
 
 app.listen(PORT, () => console.log(`Server is conected  ${PORT}`))
