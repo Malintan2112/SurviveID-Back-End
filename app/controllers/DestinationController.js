@@ -1,12 +1,20 @@
+const isEmpty = require('lodash/isEmpty')
 const Destination = require('../models/DestinationModel')
-const { succesResponse, errorResonse } = require('./JsonDefault')
+const { succesResponse, errorResponse } = require('./JsonDefault')
 
 const getAllDestination = async (req, res) => {
   try {
-    const destinations = await Destination.findAll()
+    const { categoryId } = req.query
+    let where = {}
+    if (!isEmpty(categoryId)) {
+      where = { ...where, categoryId }
+    }
+    const destinations = await Destination.findAll({
+      where
+    })
     res.json(succesResponse(destinations))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 
@@ -15,7 +23,7 @@ const createDestination = async (req, res) => {
     const destination = await Destination.create(req.body)
     res.json(succesResponse(destination))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 
@@ -28,7 +36,7 @@ const updateDestination = async (req, res) => {
     })
     res.json(succesResponse(destination))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 module.exports = ({

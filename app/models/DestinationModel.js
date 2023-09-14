@@ -13,12 +13,6 @@ const Destination = db.define('destinations', {
   idRegency: {
     type: DataTypes.STRING
   },
-  idDistrict: {
-    type: DataTypes.STRING
-  },
-  idVillage: {
-    type: DataTypes.STRING
-  },
   isShow: {
     type: DataTypes.BOOLEAN,
     defaultValue: 0

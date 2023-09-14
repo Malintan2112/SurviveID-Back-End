@@ -1,5 +1,5 @@
-const { Enrollment, User, Survivor } = require('../models/index.js')
-const { errorResonse, succesResponse } = require('./JsonDefault.js')
+const { Enrollment, User, Survivor, Partner } = require('../models/index.js')
+const { errorResponse, succesResponse } = require('./JsonDefault.js')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
@@ -76,7 +76,7 @@ const sendMail = async (req, res) => {
 
   }
   transporter.sendMail(mailData, function (err, info) {
-    if (err) { res.json(errorResonse(err)) } else { res.json(succesResponse(info)) }
+    if (err) { res.json(errorResponse(err)) } else { res.json(succesResponse(info)) }
   })
 }
 
@@ -113,7 +113,7 @@ const sendEmailTemplate = (email, subject, body, res, resSuccess, resFailed) => 
   }
   transporter.sendMail(mailData, function (err, info) {
     if (err) {
-      return res.json(errorResonse(resFailed || `${subject} gagal mengirim email`))
+      return res.json(errorResponse(resFailed || `${subject} gagal mengirim email`))
     } else {
       return res.status(200).json(succesResponse({ msg: resSuccess || `${subject} berhasil` }))
     }
@@ -134,10 +134,10 @@ const updatePassword = async (req, res) => {
       const desc = `Berikut merupakan password baru anda, mohon jangan sebarkan ke orang yg tidak berkepentingan. password = <b>${password}</b>`
       sendEmailTemplate(req.body.email, 'Reset Password', desc, res)
     } else {
-      return res.json(errorResonse('Akun Email tidak ditemukan'))
+      return res.json(errorResponse('Akun Email tidak ditemukan'))
     }
   } catch (error) {
-    return res.json(errorResonse('error server'))
+    return res.json(errorResponse('error server'))
   }
 }
 const getAllUsers = async (req, res) => {
@@ -154,7 +154,7 @@ const getAllUsers = async (req, res) => {
     })
     res.json(succesResponse(users))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 const checkEmail = async (email) => {
@@ -173,7 +173,7 @@ const createUser = async (req, res) => {
   res.setHeader('Content-Type', 'application/json')
   try {
     const { name, email, gender, phone, password, confPassword } = req.body
-    if (password !== confPassword) return res.json(errorResonse('password not same'))
+    if (password !== confPassword) return res.json(errorResponse('password not same'))
     const salt = await bcrypt.genSalt()
     const hashPassword = await bcrypt.hash(password, salt)
     const isEmailExisting = await checkEmail(email)
@@ -184,9 +184,9 @@ const createUser = async (req, res) => {
       res.json(succesResponse({ token: accessToken, user, survivor }))
       // const desc = `Berikut merupakan link verfikasi email anda. klik link ini untuk verifikasi <a href="https://api.artetisapps.com/users/verifikasi/${user.id}">Klik Link</a> `
       // sendEmailTemplate(req.body.email, 'Verfikasi Email', desc, res, 'Silahkan check inbox/spam pada email anda untuk memverfikasi', 'Terjadi Kesalahan Server Saat Register')
-    } else return res.json(errorResonse('Akun Sudah Terdaftar '))
+    } else return res.json(errorResponse('Akun Sudah Terdaftar '))
   } catch (error) {
-    return res.json(errorResonse('Terjadi Kesalahan Server Saat Register'))
+    return res.json(errorResponse('Terjadi Kesalahan Server Saat Register'))
   }
 }
 
@@ -199,7 +199,7 @@ const updateUser = async (req, res) => {
     })
     return res.status(200).json(succesResponse({ msg: 'User Updated' }))
   } catch (error) {
-    return res.json(errorResonse('error server'))
+    return res.json(errorResponse('error server'))
   }
 }
 
@@ -212,7 +212,7 @@ const deleteUser = async (req, res) => {
     })
     res.status(200).json(succesResponse({ msg: 'User Deleted' }))
   } catch (error) {
-    res.json(errorResonse('error server'))
+    res.json(errorResponse('error server'))
   }
 }
 const getUserByIdFunction = async (id) => {
@@ -238,34 +238,59 @@ const getUserById = async (req, res) => {
     })
     return res.status(200).json(succesResponse(response))
   } catch (error) {
-    return res.json(errorResonse('error server'))
+    return res.json(errorResponse('error server'))
   }
 }
 const login = async (req, res) => {
   try {
     const { email, password } = req.body
     const isEmailExisting = await checkEmail(email)
-    if (!isEmailExisting) return res.json(errorResonse('Email Tidak Ditemukan'))
+    if (!isEmailExisting) return res.json(errorResponse('Email Tidak Ditemukan'))
     const match = await bcrypt.compare(password, isEmailExisting.password)
-    if (!match) return res.json(errorResonse('Kombinasi Password Tidak Sesuai'))
+    if (!match) return res.json(errorResponse('Kombinasi Password Tidak Sesuai'))
     const name = isEmailExisting.name
     const userId = isEmailExisting.id
 
     const accessToken = jwt.sign({ userId, name, email }, process.env.ACCESS_TOKEN_SECRET)
-    const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET)
 
-    await User.update({ refresh_token: refreshToken }, {
-      where: {
-        id: userId
-      }
-    })
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000
-    })
-    return res.status(200).json(succesResponse({ token: accessToken, user: { ...isEmailExisting, password: null } }))
+    // const refreshToken = jwt.sign({ userId, name, email }, process.env.REFRESH_TOKEN_SECRET)
+    // await User.update({ refresh_token: refreshToken }, {
+    //   where: {
+    //     id: userId
+    //   }
+    // })
+    // res.cookie('refreshToken', refreshToken, {
+    //   httpOnly: true,
+    //   maxAge: 24 * 60 * 60 * 1000
+    // })
+
+    let dataParams = null
+    let paramOther = req.body.role
+
+    switch (paramOther) {
+      case 'survivor':
+        dataParams = await Survivor.findOne({
+          where: {
+            userId: userId
+          }
+        })
+        break
+      case 'partner':
+        dataParams = await Partner.findOne({
+          where: {
+            userId: userId
+          }
+        })
+        break
+      default:
+        paramOther = 'no-role-registered'
+        dataParams = null
+        break
+    }
+
+    return res.status(200).json(succesResponse({ token: accessToken, user: { ...isEmailExisting, password: null }, [paramOther]: dataParams }))
   } catch (error) {
-    return res.json(errorResonse('Terjadi Kesalahan Server Saat Login'))
+    return res.json(errorResponse('Terjadi Kesalahan Server Saat Login'))
   }
 }
 const loginFromGoogle = async (req, res) => {
@@ -301,7 +326,7 @@ const loginFromGoogle = async (req, res) => {
     })
     return res.status(200).json(succesResponse({ token: accessToken, user: { ...user, password: null }, survivor }))
   } catch (error) {
-    return res.json(errorResonse(`error server : ${error}`))
+    return res.json(errorResponse(`error server : ${error}`))
   }
 }
 

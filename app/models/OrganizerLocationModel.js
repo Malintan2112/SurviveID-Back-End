@@ -4,7 +4,6 @@ const db = require('../config/database.js')
 const { DataTypes } = Sequelize
 
 const OrganizerLocation = db.define('organizerlocations', {
-
   organizerLocationName: {
     type: DataTypes.STRING
   },
@@ -14,10 +13,19 @@ const OrganizerLocation = db.define('organizerlocations', {
   address: {
     type: DataTypes.STRING
   },
-  coordinate: {
+  latitude: {
+    type: DataTypes.STRING
+  },
+  longitude: {
     type: DataTypes.STRING
   },
   rating: {
+    type: DataTypes.DOUBLE
+  },
+  idDistrict: {
+    type: DataTypes.STRING
+  },
+  idVillage: {
     type: DataTypes.STRING
   },
   isShow: {

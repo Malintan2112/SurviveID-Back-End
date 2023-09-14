@@ -9,7 +9,7 @@ const succesResponse = (data) => {
   }
 }
 
-const errorResonse = (message) => {
+const errorResponse = (message) => {
   return {
     data: null,
     error: true,
@@ -18,4 +18,4 @@ const errorResonse = (message) => {
   }
 }
 
-module.exports = { succesResponse, errorResonse }
+module.exports = { succesResponse, errorResponse }

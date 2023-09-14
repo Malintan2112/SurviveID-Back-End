@@ -35,6 +35,9 @@ const dbAsync = async () => {
   TransactionSubmitSurvive.belongsTo(User)
   User.hasMany(TransactionSubmitSurvive)
 
+  TransactionSubmitSurvive.belongsTo(Partner)
+  Partner.hasMany(TransactionSubmitSurvive)
+
   TransactionSubmitSurvive.belongsTo(OrganizerLocation)
   OrganizerLocation.hasMany(TransactionSubmitSurvive)
 

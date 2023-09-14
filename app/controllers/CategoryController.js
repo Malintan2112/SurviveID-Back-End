@@ -1,13 +1,13 @@
 const { Category } = require('../models')
 const Destination = require('../models/DestinationModel')
-const { succesResponse, errorResonse } = require('./JsonDefault')
+const { succesResponse, errorResponse } = require('./JsonDefault')
 
 const getAllCategory = async (req, res) => {
   try {
     const categories = await Category.findAll()
     res.json(succesResponse(categories))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 
@@ -16,7 +16,7 @@ const createCategory = async (req, res) => {
     const category = await Category.create(req.body)
     res.json(succesResponse(category))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 
@@ -29,7 +29,7 @@ const updateCategory = async (req, res) => {
     })
     res.json(succesResponse(category))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 
@@ -42,7 +42,7 @@ const getAllDestinationByCategoryId = async (req, res) => {
     })
     res.json(succesResponse(destinations))
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 module.exports = {

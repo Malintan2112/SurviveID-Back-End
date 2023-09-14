@@ -23,7 +23,7 @@ const refreshToken = async (req, res) => {
       res.json(succesResponse(accessToken))
     })
   } catch (error) {
-    res.json(errorResonse(error))
+    res.json(errorResponse(error))
   }
 }
 

@@ -11,6 +11,10 @@ const RegionRouter = require('./app/routes/RegionRouter.js')
 const CategoryRouter = require('./app/routes/CategoryRouter.js')
 const DestinationRouter = require('./app/routes/DestinationRouter.js')
 const SurvivorRouter = require('./app/routes/SurvivorRouter.js')
+const PartnerRouter = require('./app/routes/PartnerRouter.js')
+const OrganizerLocationRouter = require('./app/routes/OrganizerLocationRouter.js')
+const TransactionSubmitSurviveRouter = require('./app/routes/TransactionSubmitSurviveRouter.js')
+const DetailSubmitSurviveRouter = require('./app/routes/DetailSubmitSurviveRouter.js')
 
 const PORT = process.env.PORT || 5000
 
@@ -36,10 +40,15 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
 app.use(cookieParser())
 app.use(express.json())
 app.use(pdf)
+
 app.use('/user', UserRouter)
 app.use('/region', RegionRouter)
 app.use('/category', CategoryRouter)
 app.use('/destination', DestinationRouter)
 app.use('/survivor', SurvivorRouter)
+app.use('/partner', PartnerRouter)
+app.use('/organizerLocation', OrganizerLocationRouter)
+app.use('/transactionSubmitSurvive', TransactionSubmitSurviveRouter)
+app.use('/detailSubmitSurvive', DetailSubmitSurviveRouter)
 
 app.listen(PORT, () => console.log(`Server is conected  ${PORT}`))
